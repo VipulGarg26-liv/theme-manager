@@ -1,6 +1,7 @@
 
 import dbQuery from '../db/dbQuery.js';
 import { errorMessage, status, successMessage } from '../helpers/status.js';
+import { handleError } from '../helpers/utils.js';
 
 
 async function getAllCampaigns(req, res) {
@@ -29,9 +30,7 @@ async function getAllCampaigns(req, res) {
         successMessage.data = rows;
         res.status(status.success).send(successMessage);
     } catch (error) {
-        console.log(error);
-        errorMessage.error = 'Error while campaigns';
-        res.status(status.error).send(errorMessage);
+        handleError(error, res);
     }
 }
 
@@ -48,9 +47,7 @@ async function createCampaign(req, res) {
         successMessage.data = rows[0];
         res.status(status.success).send(successMessage);
     } catch (error) {
-        console.log(error);
-        errorMessage.error = 'Error while creating campaigns';
-        res.status(status.error).send(errorMessage);
+        handleError(error, res);
     }
 }
 
@@ -64,7 +61,8 @@ async function updateCampaign(req, res) {
 
         if (campaignResponse) {
             let savedCampaign = campaignResponse.rows[0];
-            if (savedCampaign.status == 'active' && req.body.length > 1) {
+
+            if (savedCampaign.status == 'active' && Object.keys(req.body).length > 1) {
                 console.log("Cannot update campaign as it active")
                 throw new Error("Cannot change active campaign");
             }
@@ -83,9 +81,7 @@ async function updateCampaign(req, res) {
             throw new Error('No campaign exists to update');
         }
     } catch (error) {
-        console.log(error);
-        errorMessage.error = 'Error while updating campaigns';
-        res.status(status.error).send(errorMessage);
+        handleError(error, res);
     }
 }
 

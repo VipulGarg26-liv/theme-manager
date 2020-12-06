@@ -1,6 +1,7 @@
 
 import dbQuery from '../db/dbQuery.js';
 import { errorMessage, status, successMessage } from '../helpers/status.js';
+import { handleError } from '../helpers/utils.js';
 
 const getSourceQuery = `SELECT * FROM source WHERE id = $1`;
 
@@ -12,9 +13,7 @@ async function getAllSources(req, res) {
         successMessage.data = rows;
         res.status(status.success).send(successMessage);
     } catch (error) {
-        console.log(error);
-        errorMessage.error = 'Error while sources';
-        res.status(status.error).send(errorMessage);
+        handleError(error, res);
     }
 }
 
@@ -26,9 +25,7 @@ async function getSourceInfo(req, res) {
         successMessage.data = rows[0];
         res.status(status.success).send(successMessage);
     } catch (error) {
-        console.log(error);
-        errorMessage.error = 'Error while getting source info';
-        res.status(status.error).send(errorMessage);
+        handleError(error, res);
     }
 }
 
@@ -41,9 +38,7 @@ async function createSource(req, res) {
         successMessage.data = rows[0];
         res.status(status.success).send(successMessage);
     } catch (error) {
-        console.log(error);
-        errorMessage.error = 'Error while creating source';
-        res.status(status.error).send(errorMessage);
+        handleError(error, res);
     }
 }
 
@@ -63,9 +58,7 @@ async function updateSource(req, res) {
         successMessage.data = rows2[0];
         res.status(status.success).send(successMessage);
     } catch (error) {
-        console.log(error);
-        errorMessage.error = 'Error while updating source info';
-        res.status(status.error).send(errorMessage);
+        handleError(error, res);
     }
 }
 

@@ -1,6 +1,7 @@
 
 import dbQuery from '../db/dbQuery.js';
 import { errorMessage, status, successMessage } from '../helpers/status.js';
+import { handleError } from '../helpers/utils.js';
 
 const getThemeQuery = `SELECT * FROM theme WHERE id = $1`;
 
@@ -12,9 +13,7 @@ async function getAllThemes(req, res) {
         successMessage.data = rows;
         res.status(status.success).send(successMessage);
     } catch (error) {
-        console.log(error);
-        errorMessage.error = 'Error while fetching themes';
-        res.status(status.error).send(errorMessage);
+        handleError(error, res);
     }
 }
 
@@ -25,9 +24,7 @@ async function getThemeInfo(req, res) {
         successMessage.data = rows[0];
         res.status(status.success).send(successMessage);
     } catch (error) {
-        console.log(error);
-        errorMessage.error = 'Error while fetching themes';
-        res.status(status.error).send(errorMessage);
+        handleError(error, res);
     }
 }
 
@@ -41,9 +38,7 @@ async function createNewTheme(req, res) {
         successMessage.data = rows[0];
         res.status(status.success).send(successMessage);
     } catch (error) {
-        console.log(error);
-        errorMessage.error = 'Error while creating theme';
-        res.status(status.error).send(errorMessage);
+        handleError(error, res);
     }
 }
 
@@ -63,9 +58,7 @@ async function updateTheme(req, res) {
         successMessage.data = rows2[0];
         res.status(status.success).send(successMessage);
     } catch (error) {
-        console.log(error);
-        errorMessage.error = 'Error while updating theme info';
-        res.status(status.error).send(errorMessage);
+        handleError(error, res);
     }
 }
 
