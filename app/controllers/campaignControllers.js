@@ -71,7 +71,7 @@ async function updateCampaign(req, res) {
             let newCampaign = { ...savedCampaign, ...req.body };
             const { theme_id, source_id, name, description, status: campaignStatus, gift_required, gift_url, destination_url } = newCampaign;
 
-            const updateQuery = `UPDATE campaign SET name=$1, description=$2, status=$3, gift_required=$4, git_url=$5, destination_url=$6, theme_id=$7, source_id=$8
+            const updateQuery = `UPDATE campaign SET name=$1, description=$2, status=$3, gift_required=$4, gift_url=$5, destination_url=$6, theme_id=$7, source_id=$8
             WHERE id=$9 returning *`;
 
             const updateResponse = await dbQuery.query(updateQuery, [name, description, campaignStatus, gift_required, gift_url, destination_url, theme_id, source_id, campaignId]);
