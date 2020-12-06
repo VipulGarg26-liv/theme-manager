@@ -64,6 +64,9 @@ async function updateCampaign(req, res) {
 
         if (campaignResponse) {
             let savedCampaign = campaignResponse.rows[0];
+            if (savedCampaign.status === 'active' && req.body.length > 1) {
+                throw new Error("Cannot change active campaign");
+            }
             let newCampaign = { ...savedCampaign, ...req.body };
             const { theme_id, source_id, name, description, status: campaignStatus, gift_required, gift_url, destination_url } = newCampaign;
 
