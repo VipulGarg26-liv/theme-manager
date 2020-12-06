@@ -49,7 +49,7 @@ async function createNewTheme(req, res) {
 async function updateTheme(req, res) {
     try {
         const { themeId } = req.params;
-        console.log("updating theme for id ", sourceId);
+        console.log("updating theme for id ", themeId);
 
         const { rows } = await dbQuery.query(getThemeQuery, [themeId]);
         let savedThemeData = rows[0];
