@@ -34,9 +34,9 @@ async function getSourceInfo(req, res) {
 
 async function createSource(req, res) {
     try {
-        const { name, title, description } = req.body;
-        const postQuery = `INSERT INTO source(name, title, description) VALUES( $1, $2, $3) returning *`;
-        const { rows } = await dbQuery.query(postQuery, [name, title, description]);
+        const { name, title, description, source_url } = req.body;
+        const postQuery = `INSERT INTO source(name, title, description, source_url) VALUES( $1, $2, $3, $4) returning *`;
+        const { rows } = await dbQuery.query(postQuery, [name, title, description, source_url]);
         console.log(rows);
         successMessage.data = rows[0];
         res.status(status.success).send(successMessage);
@@ -56,10 +56,10 @@ async function updateSource(req, res) {
         let savedSourceData = rows[0];
 
         const newSourceData = { ...savedSourceData, ...req.body };
-        const { name, title, description } = newSourceData;
+        const { name, title, description, source_url } = newSourceData;
 
-        const updateQuery = `UPDATE source SET name=$1, title=$2,description=$3 WHERE id=$4 returning *`;
-        const { rows: rows2 } = await dbQuery.query(updateQuery, [name, title, description, sourceId]);
+        const updateQuery = `UPDATE source SET name=$1, title=$2,description=$3, source_url=$4 WHERE id=$5 returning *`;
+        const { rows: rows2 } = await dbQuery.query(updateQuery, [name, title, description, source_url, sourceId]);
         successMessage.data = rows2[0];
         res.status(status.success).send(successMessage);
     } catch (error) {
