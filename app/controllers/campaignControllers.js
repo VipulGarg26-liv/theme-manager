@@ -55,7 +55,7 @@ async function createCampaign(req, res) {
 }
 
 async function updateCampaign(req, res) {
-
+    console.log("Updating Campaign");
     try {
         const { campaignId } = req.params;
 
@@ -65,6 +65,7 @@ async function updateCampaign(req, res) {
         if (campaignResponse) {
             let savedCampaign = campaignResponse.rows[0];
             if (savedCampaign.status === 'active' && req.body.length > 1) {
+                console.log("Canot update campaign as it active")
                 throw new Error("Cannot change active campaign");
             }
             let newCampaign = { ...savedCampaign, ...req.body };
@@ -77,6 +78,7 @@ async function updateCampaign(req, res) {
             successMessage.data = updateResponse.rows[0];
             res.status(status.success).send(successMessage);
         } else {
+            console.log("No matching campaign exits");
             throw new Error('No campaign exists to update');
         }
     } catch (error) {
