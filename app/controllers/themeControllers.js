@@ -33,9 +33,9 @@ async function getThemeInfo(req, res) {
 
 async function createNewTheme(req, res) {
     try {
-        const { name, type, data = '' } = req.body;
-        const postQuery = `INSERT INTO theme(name, type, data) VALUES( $1, $2, $3) returning *`;
-        const { rows } = await dbQuery.query(postQuery, [name, type, data]);
+        const { name, type, data = '', logo_url, background_url, gift_url } = req.body;
+        const postQuery = `INSERT INTO theme(name, type, data, logo_url, background_url, gift_url) VALUES( $1, $2, $3, $4, $5, $6) returning *`;
+        const { rows } = await dbQuery.query(postQuery, [name, type, data, logo_url, background_url, gift_url]);
 
         successMessage.data = rows[0];
         res.status(status.success).send(successMessage);
@@ -55,10 +55,10 @@ async function updateTheme(req, res) {
         let savedThemeData = rows[0];
 
         const newThemeData = { ...savedThemeData, ...req.body };
-        const { name, type, data } = newThemeData;
+        const { name, type, data, logo_url, background_url, gift_url } = newThemeData;
 
-        const updateQuery = `UPDATE theme SET name=$1, type=$2, data=$3 WHERE id=$4 returning *`;
-        const { rows: rows2 } = await dbQuery.query(updateQuery, [name, type, data, themeId]);
+        const updateQuery = `UPDATE theme SET name=$1, type=$2, data=$3, logo_url=$4, background_url=$5, gift_url=$6  WHERE id=$7 returning *`;
+        const { rows: rows2 } = await dbQuery.query(updateQuery, [name, type, data, logo_url, background_url, gift_url, themeId]);
         successMessage.data = rows2[0];
         res.status(status.success).send(successMessage);
     } catch (error) {
