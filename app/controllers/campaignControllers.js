@@ -5,15 +5,27 @@ import { errorMessage, status, successMessage } from '../helpers/status.js';
 
 async function getAllCampaigns(req, res) {
     console.log("fetching campaigns");
-    const { source, status } = req.params;
-    let getQuery = '';
+    const { source, status: campaignStatus } = req.query;
+    let getQuery = `SELECT * FROM campaign`,
+        queryArgs = [];
 
     try {
         if (source) {
-            getQuery = `SELECT * FROM campaign INNER JOIN source ON campaign.source_id = source.id WHERE source.name = $1 AND campaign.status = $`;
+            getQuery = `SELECT * FROM campaign INNER JOIN source ON campaign.source_id = source.id WHERE source.name = $1`;
+            queryArgs.push(source);
         }
-        getQuery = `SELECT * FROM campaign`;
-        const { rows } = await dbQuery.query(getQuery, [source]);
+
+        if (source && campaignStatus) {
+            getQuery += ` AND campaign.status= $2`;
+            queryArgs.push(campaignStatus);
+        }
+
+        if (!source && campaignStatus) {
+            getQuery += ` WHERE campaign.status= $1`;
+            queryArgs.push(campaignStatus);
+        }
+
+        const { rows } = await dbQuery.query(getQuery, queryArgs);
         successMessage.data = rows;
         res.status(status.success).send(successMessage);
     } catch (error) {
@@ -27,11 +39,12 @@ async function getAllCampaigns(req, res) {
 
 async function createCampaign(req, res) {
     try {
-        const { theme_id, source_id, name, description, gift_required, gift_url, destination_url } = req.body;
+        console.log(req.body);
+        const { theme_id, source_id, name, status: campaignStatus, description, gift_required, gift_url, destination_url } = req.body;
 
-        const createQuery = `INSERT INTO campaign(name, description, gift_required, gift_url, destination_url, theme_id, source_id) VALUES( $1, $2, $3, $4, $5, $6, $7) returning *`
+        const createQuery = `INSERT INTO campaign(name, description, gift_required, gift_url, destination_url, theme_id, source_id, status) VALUES( $1, $2, $3, $4, $5, $6, $7, $8) returning *`
 
-        const { rows } = await dbQuery.query(createQuery, [name, description, gift_required, gift_url, destination_url, theme_id, source_id]);
+        const { rows } = await dbQuery.query(createQuery, [name, description, gift_required, gift_url, destination_url, theme_id, source_id, campaignStatus]);
         successMessage.data = rows[0];
         res.status(status.success).send(successMessage);
     } catch (error) {
@@ -52,12 +65,12 @@ async function updateCampaign(req, res) {
         if (campaignResponse) {
             let savedCampaign = campaignResponse.rows[0];
             let newCampaign = { ...savedCampaign, ...req.body };
-            const { theme_id, source_id, name, description, status, gift_required, gift_url, destination_url } = newCampaign;
+            const { theme_id, source_id, name, description, status: campaignStatus, gift_required, gift_url, destination_url } = newCampaign;
 
             const updateQuery = `UPDATE campaign SET name=$1, description=$2, status=$3, gift_required=$4, git_url=$5, destination_url=$6, theme_id=$7, source_id=$8
             WHERE id=$9 returning *`;
 
-            const updateResponse = await dbQuery.query(updateQuery, [name, description, status, gift_required, gift_url, destination_url, theme_id, source_id, campaignId]);
+            const updateResponse = await dbQuery.query(updateQuery, [name, description, campaignStatus, gift_required, gift_url, destination_url, theme_id, source_id, campaignId]);
             successMessage.data = updateResponse.rows[0];
             res.status(status.success).send(successMessage);
         } else {
