@@ -5,15 +5,15 @@ import { errorMessage, status, successMessage } from '../helpers/status.js';
 
 async function getAllCampaigns(req, res) {
     console.log("fetching campaigns");
-    const { source } = req.params;
+    const { source, status } = req.params;
     let getQuery = '';
 
     try {
         if (source) {
-            getQuery = `SELECT * FROM campaign INNER JOIN source ON campaign.source_id = source.id WHERE source.name AND campaign.status = true`;
+            getQuery = `SELECT * FROM campaign INNER JOIN source ON campaign.source_id = source.id WHERE source.name = $1 AND campaign.status = $`;
         }
         getQuery = `SELECT * FROM campaign`;
-        const { rows } = await dbQuery.query(getQuery);
+        const { rows } = await dbQuery.query(getQuery, [source]);
         successMessage.data = rows;
         res.status(status.success).send(successMessage);
     } catch (error) {

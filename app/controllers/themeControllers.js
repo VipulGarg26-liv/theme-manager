@@ -33,7 +33,7 @@ async function getThemeInfo(req, res) {
 
 async function createNewTheme(req, res) {
     try {
-        const { name, type, data } = req.body;
+        const { name, type, data = '' } = req.body;
         const postQuery = `INSERT INTO theme(name, type, data) VALUES( $1, $2, $3) returning *`;
         const { rows } = await dbQuery.query(postQuery, [name, type, data]);
 
