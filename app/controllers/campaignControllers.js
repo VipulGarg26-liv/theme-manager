@@ -98,6 +98,12 @@ async function updateCampaign(req, res) {
                 console.log("Cannot update campaign as it active")
                 throw new Error("Cannot change active campaign");
             }
+
+            if (req.body.status.toLowerCase() == 'active') {
+                let updateMatchingCampaignsQuery = `UPDATE campaign SET status='inactive' WHERE source_id=$1 AND id != $2`;
+                let response = await dbQuery.query(updateMatchingCampaignsQuery, [savedCampaign.source_id, campaignId]);
+                console.log('All active campaigns for matching source made inative');
+            }
             console.log("Campaign can be updated");
             let newCampaign = { ...savedCampaign, ...req.body };
             const { theme_id, source_id, name, description, status: campaignStatus, gift_required, gift_url, destination_url } = newCampaign;
