@@ -11,7 +11,7 @@ async function getAllCampaigns(req, res) {
     camp.status AS campaign_status, camp.gift_required AS campaign_gift_required,
     camp.description AS campaign_description, camp.gift_url AS campaign_gift_url,
     camp.destination_url AS campaign_destination_url,
-    sr.id AS source_id, sr.name AS source_name, sr.title AS source_title, 
+    sr.id AS source_id, sr.name AS source_name,
     sr.source_url AS source_url, sr.description AS source_description,
     th.id AS theme_id, th.name AS theme_name, th.description AS theme_description,
     th.background_url AS theme_background_url, th.logo_url AS theme_logo_url,
