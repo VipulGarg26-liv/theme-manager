@@ -7,24 +7,23 @@ import { handleError } from '../helpers/utils.js';
 async function getAllCampaigns(req, res) {
     console.log("fetching campaigns");
     const { source_url, status: campaignStatus } = req.query;
-    let getQuery = `SELECT * FROM campaign`,
+    let getQuery = `SELECT camp.id AS campaign_id, camp.name AS campaign_name,
+    camp.status AS campaign_status, camp.gift_required AS campaign_gift_required,
+    camp.description AS campaign_description, camp.gift_url AS campaign_gift_url,
+    camp.destination_url AS campaign_destination_url,
+    sr.id AS source_id, sr.name AS source_name, sr.title AS source_title, 
+    sr.source_url AS source_url, sr.description AS source_description,
+    th.id AS theme_id, th.name AS theme_name, th.description AS theme_description,
+    th.background_url AS theme_background_url, th.logo_url AS theme_logo_url,
+    th.gift_url AS theme_gift_url
+    FROM campaign camp 
+    INNER JOIN source sr ON camp.source_id = sr.id 
+    INNER JOIN theme th ON camp.theme_id = th.id`,
         queryArgs = [];
 
     try {
         if (source_url) {
-            getQuery = `SELECT camp.id AS campaign_id, camp.name AS campaign_name,
-            camp.status AS campaign_status, camp.gift_required AS campaign_gift_required,
-            camp.description AS campaign_description, camp.gift_url AS campaign_gift_url,
-            camp.destination_url AS campaign_destination_url,
-            sr.id AS source_id, sr.name AS source_name, sr.title AS source_title, 
-            sr.source_url AS source_url, sr.description AS source_description,
-            th.id AS theme_id, th.name AS theme_name, th.description AS theme_description,
-            th.background_url AS theme_background_url, th.logo_url AS theme_logo_url,
-            th.gift_url AS theme_gift_url
-            FROM campaign camp 
-            INNER JOIN source sr ON camp.source_id = sr.id 
-            INNER JOIN theme th ON camp.theme_id = th.id
-            WHERE sr.source_url=$1`;
+            getQuery += ` WHERE sr.source_url=$1`;
 
             queryArgs.push(source_url);
         }
